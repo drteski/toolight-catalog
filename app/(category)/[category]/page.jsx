@@ -13,7 +13,9 @@ import Filters from "./components/Filters";
 const ProductsPage = ({ params }) => {
   const [page, setPage] = useState(1);
   // Rodzaj lampy
-  const [type, setType] = useState();
+  const [category, setCategory] = useState(
+    params.category !== "catalog" ? [decodeURI(params.category)] : undefined
+  );
   // Kolor lampy
   const [color, setColor] = useState();
   // Gwint lampy
@@ -25,28 +27,40 @@ const ProductsPage = ({ params }) => {
   const { isLoading, error, products, hasMore } = useGetData(
     page,
     undefined,
-    type,
+    category,
     color,
     thread,
     hue,
     numberOfLightPoints
   );
 
-  useEffect(() => setPage(1), [type, color, thread, hue, numberOfLightPoints]);
+  useEffect(
+    () => setPage(1),
+    [category, color, thread, hue, numberOfLightPoints]
+  );
 
   return (
     <>
-      <Wrapper>
-        <div className="flex flex-row gap-8 w-full justify-between items-center">
-          <h1 className="my-8 text-5xl font-light text-toolight-paragraph-hover-light">
+      <Wrapper className={"flex flex-col gap-8 pt-8"}>
+        <div className="flex flex-row gap-8 w-full justify-between items-end">
+          <h1 className="text-4xl text-toolight-paragraph-hover-light">
             Produkty
           </h1>
           <Filters
-            type={setType}
-            color={setColor}
-            thread={setThread}
-            hue={setHue}
-            numberOfLightPoints={setNumberOfLightPoints}
+            states={{
+              category: category,
+              color: color,
+              thread: thread,
+              hue: hue,
+              numberOfLightPoints: numberOfLightPoints,
+            }}
+            setStates={{
+              category: setCategory,
+              color: setColor,
+              thread: setThread,
+              hue: setHue,
+              numberOfLightPoints: setNumberOfLightPoints,
+            }}
           />
         </div>
         {!isLoading ? (
